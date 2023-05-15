@@ -1,0 +1,95 @@
+class RakObat:
+    def __init__(self):
+        self.size = 10
+        self.map = [None] * self.size
+    
+    def getHash(self, key):
+        hash = 0
+        for char in key:
+            hash += ord(char)
+        return hash % self.size
+    
+    def probing(self, key):
+        return 1
+    
+    def linearProbing(self, key, index):
+        i = 1
+        nextIndex = (index + i) % self.size
+        while self.map[nextIndex] != None and self.map[nextIndex][0] != key and self.map[nextIndex][0] != "deleted":
+            i += 1
+            nextIndex = (index + i) % self.size
+        return nextIndex
+    
+    def tambahObat(self, jenisObat, namaObat):
+        key = jenisObat
+        value = namaObat
+        hash = self.getHash(key)
+        if self.map[hash] == None:
+            self.map[hash] = [key, value]
+            return True
+        elif self.map[hash][0] == key:
+            return False
+        else:
+            nextIndex = self.linearProbing(key, hash)
+            if self.map[nextIndex] == None:
+                self.map[nextIndex] = [key, value]
+                return True
+            elif self.map[nextIndex][0] == key:
+                return False
+            else:
+                return False
+    
+    def lihatObat(self, jenisObat):
+        key = jenisObat
+        hash = self.getHash(key)
+        if self.map[hash] == None:
+            return "None"
+        elif self.map[hash][0] == key:
+            return self.map[hash][1]
+        else:
+            nextIndex = self.linearProbing(key, hash)
+            if self.map[nextIndex] == None:
+                return "None"
+            elif self.map[nextIndex][0] == key:
+                return self.map[nextIndex][1]
+            else:
+                return "None"
+    
+    def ambilObat(self, jenisObat):
+        key = jenisObat
+        hash = self.getHash(key)
+        if self.map[hash] == None:
+            return False
+        elif self.map[hash][0] == key:
+            self.map[hash] = ["deleted", None]
+            return True
+        else:
+            nextIndex = self.linearProbing(key, hash)
+            if self.map[nextIndex] == None:
+                return False
+            elif self.map[nextIndex][0] == key:
+                self.map[nextIndex] = ["deleted", None]
+                return True
+            else:
+                return False
+    
+    def printAll(self):
+        for i in range(self.size):
+            if self.map[i] != None and self.map[i][0] != "deleted":
+                print(self.map[i][0] + ": " + self.map[i][1])
+
+if __name__ == "__main__":
+    rak1 = RakObat()
+    rak1.tambahObat("Covid", "AstraZeneca (A01)")
+    rak1.tambahObat("Flu", "UltraFlu (A02)")
+    rak1.tambahObat("Sakit Kepala", "Paramex (A03)")
+    rak1.tambahObat("Maag", "Pro Maag (A04)")
+    rak1.tambahObat("Sakit Kepala", "Bodrex (A05)")
+
+    print(rak1.lihatObat("Sakit Kepala"))
+    print(rak1.lihatObat("Sakit Kepala"))
+    print(rak1.lihatObat("Migraine"))
+
+    rak1.ambilObat("Flu")
+    rak1.ambilObat("Malaria")
+    rak1.printAll()
